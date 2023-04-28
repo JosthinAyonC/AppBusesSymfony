@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Usuario index{% endblock %}
+
+{% block body %}
+<br>
+<div class="container-fluid">
+    <div class="bg-secondary rounded h-100 p-4">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h3 class="mb-4">Usuarios</h3>
+            <form id="form-obtenerRoles">
+                <input type="hidden" name="roles" value="{{ app.user.roles|join(', ') }}">
+            </form>
+            <table class="table" id="tablausuarios">
+                <thead>
+                    <tr>
+                        <th>IdUsuario</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+
+            </table>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a class="btn btn-primary m-2" href="{{path('app_usuario_nuevo') }}">Crear nuevo usuario</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="{{asset('js/scriptUsuario.js')}}"></script>
+
+{% endblock %}

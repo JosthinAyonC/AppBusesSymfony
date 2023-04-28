@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reserva index{% endblock %}
+
+{% block body %}
+<br>
+<div class="container-fluid">
+    <div class="bg-secondary rounded h-100 p-4">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h3 class="mb-4">Reservas de buses</h3>
+            <form id="form-obtenerRoles">
+                <input type="hidden" name="roles" value="{{ app.user.roles|join(', ') }}">
+            </form>
+            <table class="table" id="tablareserva">
+                <thead>
+                    <tr>
+                        <th>IdReserva</th>
+                        <th>Precio</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <th>actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        {% if is_granted('ROLE_ADMIN') %}
+        <a class="btn btn-primary m-2" href="{{ path('app_reserva_new') }}">Crear nueva reserva</a>
+        {% endif %}
+        </div>
+    </div>
+
+<script src="{{asset('js/scriptReserva.js')}}"></script>
+
+{% endblock %}
