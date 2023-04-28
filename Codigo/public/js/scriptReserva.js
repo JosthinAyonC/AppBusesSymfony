@@ -9,6 +9,10 @@ function mostrarDatosTabla(datos) {
         var celdaReserva = document.createElement("td");
         celdaReserva.textContent = reserva.idReserva;
         fila.appendChild(celdaReserva);
+        
+        var celdaReservaNombre = document.createElement("td");
+        celdaReservaNombre.textContent = reserva.nombre;
+        fila.appendChild(celdaReservaNombre);
 
         var celdaPrecio = document.createElement("td");
         celdaPrecio.textContent = reserva.precio
@@ -106,4 +110,83 @@ function traerRol() {
     let data = Object.fromEntries(formData);
 
     return data.roles;
+}
+
+//NUEVO USUARIO
+let btn_nuevo = document.getElementById("btnNuevo");
+let formNeReserva = document.getElementById("nueva-reserva");
+
+try {
+
+    btn_nuevo.addEventListener("click", async function () {
+
+            let formData = new FormData(formNeReserva);
+
+            let data = Object.fromEntries(formData);    
+
+
+            if (data.nombre=="" || data.precio=="" || data.fecha=="" || data.hora=="" ){
+                
+                alert("Asegurese de llenar todos los datos")
+                
+            }else{
+
+            // Convertir el objeto JavaScript a una cadena JSON
+                let jsonData = JSON.stringify(data);
+                let response = await fetch(`/reserva/nuevo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: jsonData
+                });
+                console.log(jsonData)
+                console.log(response)
+                alert("Reserva creado satisfatoriamente");
+                location.replace('/reserva');
+               
+            }
+
+    });
+
+} catch (error) {
+    console.log(error);
+}
+
+//EDITAR Reserva
+let formularioEditarReserva = document.getElementById("form-editar-reserva");
+let btnActualizarReserva = document.getElementById("btn-actualizarReserva");
+
+try {
+
+    btnActualizarReserva.addEventListener("click", async function () {
+
+        let formData = new FormData(formularioEditarReserva);
+
+        // Convertir el objeto FormData a un objeto JavaScript
+        let data = Object.fromEntries(formData);
+
+        if (data.nombre=="" || data.precio=="" || data.fecha=="" || data.hora=="" ){
+                
+            alert("Asegurese de llenar todos los datos")
+            
+        }else{
+            // Convertir el objeto JavaScript a una cadena JSON
+            let jsonData = JSON.stringify(data);
+    
+            const idReserva = formData.get("id");
+            await fetch(`/reserva/${idReserva}/editar`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+            alert("Reserva editado satisfatoriamente");
+            location.replace('/reserva');
+        }
+        
+    });
+} catch (error) {
+    console.log(error);
 }

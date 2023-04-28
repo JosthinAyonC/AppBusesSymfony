@@ -171,7 +171,7 @@ class UsuarioController extends AbstractController
         UsuarioRepository $usuarioRepository,
         UserPasswordHasherInterface $userPasswordHasher
     ): Response {
-
+        
         if ($this->isGranted('ROLE_ADMIN')) {
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);

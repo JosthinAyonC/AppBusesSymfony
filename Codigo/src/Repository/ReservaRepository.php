@@ -48,6 +48,14 @@ class ReservaRepository extends ServiceEntityRepository
            ->getResult()
            ;
     }
+    public function findOneByReservaId($value): ?Reserva
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.idReserva = :id')
+            ->setParameter('id', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
 //    /**
 //     * @return Reserva[] Returns an array of Reserva objects

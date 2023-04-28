@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Reserva;
 use App\Form\ReservaType;
 use App\Repository\ReservaRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,38 +18,66 @@ class ReservaController extends AbstractController
     #[Route('/', name: 'app_reserva_index', methods: ['GET'])]
     public function index(ReservaRepository $reservaRepository): Response
     {
-            return $this->render('reserva/index.html.twig');
-
+        return $this->render('reserva/index.html.twig');
     }
 
     #[Route('/get', name: 'app_reserva_api', methods: ['GET'])]
     public function getUsuarios(EntityManagerInterface $entityManager): Response
     {
-            $reservas = $entityManager
-                ->getRepository(Reserva::class)
-                ->buscarReserva();
+        $reservas = $entityManager
+            ->getRepository(Reserva::class)
+            ->buscarReserva();
 
-            return $this->json($reservas);
-
+        return $this->json($reservas);
     }
 
     #[Route('/new', name: 'app_reserva_new', methods: ['GET', 'POST'])]
+    public function indexNuevoReseva(): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->render('reserva/new.html.twig');
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
+    }
+
+    #[Route('/nuevo', name: 'app_reserva_nuevo', methods: ['GET', 'POST'])]
     public function new(Request $request, ReservaRepository $reservaRepository): Response
     {
-        $reserva = new Reserva();
-        $form = $this->createForm(ReservaType::class, $reserva);
-        $form->handleRequest($request);
+        if ($this->isGranted('ROLE_ADMIN')) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $reservaRepository->save($reserva, true);
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
 
-            return $this->redirectToRoute('app_reserva_index', [], Response::HTTP_SEE_OTHER);
+            $reservaNew = new Reserva();
+
+            $reservaNew->setNombre($data['nombre']);
+            $reservaNew->setPrecio($data['precio']);
+            $fecha = DateTime::createFromFormat('Y-m-d H:i', $data['fecha'] . ' ' . $data['hora']);
+            $reservaNew->setFecha($fecha);
+            $reservaNew->setEstado('Disponible');
+
+            $reservaRepository->save($reservaNew, true);
+
+            return $this->json($reservaNew);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
         }
+    }
 
-        return $this->renderForm('reserva/new.html.twig', [
-            'reserva' => $reserva,
-            'form' => $form,
-        ]);
+    #[Route('/editar/{id}', name: 'editar_reserva', methods: ['GET'])]
+    public function editarUsuario(string $id, ReservaRepository $reservaRepository): Response
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+
+            $reserva = $reservaRepository->findOneByReservaId($id);
+
+            return $this->render('reserva/edit.html.twig', [
+                'reserva' => $reserva
+            ]);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
+        }
     }
 
     #[Route('/{idReserva}', name: 'app_reserva_show', methods: ['GET'])]
@@ -59,28 +88,42 @@ class ReservaController extends AbstractController
         ]);
     }
 
-    #[Route('/{idReserva}/edit', name: 'app_reserva_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reserva $reserva, ReservaRepository $reservaRepository): Response
-    {
-        $form = $this->createForm(ReservaType::class, $reserva);
-        $form->handleRequest($request);
+    #[Route('/{id}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
+    public function editarUsuarioPut(
+        Request $request,
+        string $id,
+        ReservaRepository $reservaRepository
+    ): Response {
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($this->isGranted('ROLE_ADMIN')) {
+
+            $reserva = $reservaRepository->findOneByUserId($id);
+
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+            $reservaNew = new Reserva();
+
+            $reservaNew->setNombre($data['nombre']);
+            $reservaNew->setPrecio($data['precio']);
+            $fecha = DateTime::createFromFormat('Y-m-d H:i', $data['fecha'] . ' ' . $data['hora']);
+            $reservaNew->setFecha($fecha);
+            $reservaNew->setEstado($data['estado']);
+
+            $reservaRepository->save($reservaNew, true);
+
             $reservaRepository->save($reserva, true);
 
-            return $this->redirectToRoute('app_reserva_index', [], Response::HTTP_SEE_OTHER);
+            return $this->json($reserva);
+        } else {
+            return $this->render('usuario/accesDenied.html.twig');
         }
-
-        return $this->renderForm('reserva/edit.html.twig', [
-            'reserva' => $reserva,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{idReserva}', name: 'app_reserva_delete', methods: ['POST'])]
     public function delete(Request $request, Reserva $reserva, ReservaRepository $reservaRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$reserva->getIdReserva(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reserva->getIdReserva(), $request->request->get('_token'))) {
             $reservaRepository->remove($reserva, true);
         }
 

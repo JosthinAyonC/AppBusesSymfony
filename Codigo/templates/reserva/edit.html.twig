@@ -3,11 +3,66 @@
 {% block title %}Edit Reserva{% endblock %}
 
 {% block body %}
-    <h1>Edit Reserva</h1>
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
 
-    {{ include('reserva/_form.html.twig', {'button_label': 'Update'}) }}
+            <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <a href="#" class="">
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Editar reserva.</h3>
+                    </a>
+                    <h3>Aplication</h3>
+                </div>
+                <form id="form-editar-reserva" >
 
-    <a href="{{ path('app_reserva_index') }}">back to list</a>
+                    <div class="form-floating mb-3">
+                        <input type="text" id="nombre" value="{{reserva.nombre}}" class="form-control" name="nombre" placeholder="Nombre">
+                        <input type="hidden" id="id" value={{reserva.idReserva}} name="id">
+                        <label for="nombre">Nombre</label>
 
-    {{ include('reserva/_delete_form.html.twig') }}
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" id="precio" value="{{reserva.precio}}"  class="form-control" name="precio" placeholder="Precio">
+
+                        <label for="precio">Precio</label>
+
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" id="fecha" value={{reserva.fecha |date("m/d/Y")}} class="form-control" name="fecha" placeholder="Fecha">
+                        <label for="fecha">Fecha</label>
+
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="text" id="hora" value={{reserva.fecha |date('H:i:s') }} class="form-control" name="hora" placeholder="Hora">
+
+                        <label for="hora">Hora</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <select class="form-select" for="estado" name="estado"
+                            aria-label="Floating label select example">
+                            <option value={{reserva.estado}}>{{reserva.estado}}</option>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Ocupado">Ocupado</option>
+                        </select>
+                        <label for="estado">Estado</label>
+
+                    </div>
+                    
+                    <div>
+                        <button id="btn-actualizarReserva" type="button"
+                         class="btn btn-primary py-3 w-100 mb-4">Editar</button>
+                    </div>
+
+
+                    <p class="text-center mb-0"><a href="/reserva">Volver</a></p>
+
+            </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- <script src="{{asset('js/scriptReserva.js')}}"></script> -->
 {% endblock %}
