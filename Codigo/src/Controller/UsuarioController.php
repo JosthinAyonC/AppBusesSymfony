@@ -70,8 +70,7 @@ class UsuarioController extends AbstractController
     public function editarUsuarioPut(
         Request $request,
         string $id,
-        UsuarioRepository $usuarioRepository,
-        UserPasswordHasherInterface $userPasswordHasher
+        UsuarioRepository $usuarioRepository
     ): Response {
 
         if ($this->isGranted('ROLE_ADMIN')) {

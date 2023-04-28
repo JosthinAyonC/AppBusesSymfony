@@ -88,31 +88,28 @@ class ReservaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/editar', name: 'actualizar_usuario', methods: ['PUT'])]
-    public function editarUsuarioPut(
+    #[Route('/{id}/editar', name: 'actualizar_reserva', methods: ['PUT', 'POST'])]
+    public function editarReservaPut(
         Request $request,
         string $id,
         ReservaRepository $reservaRepository
     ): Response {
 
         if ($this->isGranted('ROLE_ADMIN')) {
-
-            $reserva = $reservaRepository->findOneByUserId($id);
+            
+            $reserva = $reservaRepository->findOneByReservaId($id);
 
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);
 
-            $reservaNew = new Reserva();
-
-            $reservaNew->setNombre($data['nombre']);
-            $reservaNew->setPrecio($data['precio']);
+            $reserva->setNombre($data['nombre']);
+            $reserva->setPrecio($data['precio']);
             $fecha = DateTime::createFromFormat('Y-m-d H:i', $data['fecha'] . ' ' . $data['hora']);
-            $reservaNew->setFecha($fecha);
-            $reservaNew->setEstado($data['estado']);
-
-            $reservaRepository->save($reservaNew, true);
+            $reserva->setFecha($fecha);
+            $reserva->setEstado($data['estado']);
 
             $reservaRepository->save($reserva, true);
+
 
             return $this->json($reserva);
         } else {

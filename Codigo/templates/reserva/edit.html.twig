@@ -29,12 +29,12 @@
 
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" id="fecha" value={{reserva.fecha |date("m/d/Y")}} class="form-control" name="fecha" placeholder="Fecha">
+                        <input type="text" id="fecha" value={{reserva.fecha |date("Y-m-d")}} class="form-control" name="fecha" placeholder="Fecha">
                         <label for="fecha">Fecha</label>
 
                     </div>
                     <div class="form-floating mb-4">
-                        <input type="text" id="hora" value={{reserva.fecha |date('H:i:s') }} class="form-control" name="hora" placeholder="Hora">
+                        <input type="text" id="hora" value={{reserva.fecha |date('H:i') }} class="form-control" name="hora" placeholder="Hora">
 
                         <label for="hora">Hora</label>
                     </div>
@@ -48,7 +48,7 @@
                         <label for="estado">Estado</label>
 
                     </div>
-                    
+
                     <div>
                         <button id="btn-actualizarReserva" type="button"
                          class="btn btn-primary py-3 w-100 mb-4">Editar</button>
@@ -64,5 +64,5 @@
     </div>
 </div>
 
-<!-- <script src="{{asset('js/scriptReserva.js')}}"></script> -->
+<script src="{{asset('js/scriptReserva.js')}}"></script>
 {% endblock %}
